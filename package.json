@@ -1,16 +1,16 @@
 {
-  "name": "banka",
+  "name": "banka_v2",
   "version": "2.0.0",
   "description": "A light-weight banking application",
   "main": "api/app.js",
   "scripts": {
-    "test": "nyc --reporter=html --reporter=text --require @babel/register --require @babel/polyfill mocha --timeout 15000 api/test/*.js --exit",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "pretest": "cross-env NODE_ENV=test npm run migrate:undo && cross-env NODE_ENV=test npm run migrate && cross-env NODE_ENV=test npm run seed",
+    "test": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text --require @babel/register --require @babel/polyfill mocha --timeout 15000 api/test/*.js --exit",
     "dev": "nodemon --exec babel-node ./api/app.js",
     "start": "node build/app.js",
     "migrate": "sequelize db:migrate",
-    "undo:migrate": "sequelize db:migrate:undo:all",
-    "seedall": "sequelize db:seed:all"
+    "migrate:undo": "sequelize db:migrate:undo:all",
+    "seed": "sequelize db:seed:all"
   },
   "author": "@ocranbillions",
   "license": "MIT",
@@ -27,6 +27,7 @@
     "chai": "^4.2.0",
     "chai-http": "^4.2.1",
     "coveralls": "^3.0.3",
+    "cross-env": "^6.0.3",
     "eslint": "^5.15.3",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0",

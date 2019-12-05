@@ -26,26 +26,19 @@ export const production = {
 };
 
 
-// {
-//   "development": { 
-//     "username": "postgres",
-//     "password": "postgres",
-//     "database": "banka_db",
-//     "host": "127.0.0.1",
-//     "dialect": "postgres"
-//   },
-//   "test": {
-//     "username": "postgres",
-//     "password": "postgres",
-//     "database": "banka_test_db",
-//     "host": "127.0.0.1",
-//     "dialect": "postgres"
-//   },
-//   "production": {
-//     "username": "root",
-//     "password": null,
-//     "database": "database_production",
-//     "host": "127.0.0.1",
-//     "dialect": "mysql"
-//   }
-// }
+// import { config } from 'dotenv';
+// config();
+
+// export const development = {
+//   use_env_variable: 'DATABASE_URL',
+//   logging: false,
+// };
+
+// export const test = {
+//   use_env_variable: 'TEST_DATABASE_URL',
+//   logging: false
+// };
+
+// export const production = {
+//   use_env_variable: 'DATABASE_URL',
+// };

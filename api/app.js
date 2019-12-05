@@ -5,18 +5,19 @@ import cors from 'cors';
 import swagger from 'swagger-ui-express';
 import swaggerDocument from './swagger.json';
 
-// routes
-import accountRoutes from './routes/accountRoutes';
-import transactionRoutes from './routes/transactionRoutes';
+
+// Api routes
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
+import accountRoutes from './routes/accountRoutes';
+import transactionRoutes from './routes/transactionRoutes';
 
 const server = express();
 server.use(cors());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: false }));
 
-// swagger
+// Api documentation
 server.use('/api-docs', swagger.serve, swagger.setup(swaggerDocument));
 
 server.get('/', (req, res) => {
@@ -28,10 +29,18 @@ server.use('/api/v1/auth', authRoutes);
 // server.use('/api/v1/accounts', accountRoutes);
 // server.use('/api/v1/transactions', transactionRoutes);
 
+server.use((error, req, res, next) => {
+  if(process.env.NODE_ENV === 'development')
+    console.log(error)
+  return res.status(500).json({
+    status: 500,
+    errorMessage: 'Oops! something terrible happened. Try again.',
+  });
+});
+
 const port = process.env.PORT || 3001;
 server.listen(port, () => {
   console.log(`server is listening on port ${port}!`);
 });
 
-// Export for testing
 export default server;

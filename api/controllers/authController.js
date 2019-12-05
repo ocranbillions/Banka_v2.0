@@ -20,6 +20,9 @@ const AuthController = {
 
       const emailFound = await models.User.findOne({ where: { email } });
       if (emailFound) {
+        
+        console.log(emailFound.dataValues)
+        // email not available
         return res.status(409).json({
           status: 409,
           errorMessage: 'Email already used',
@@ -58,36 +61,40 @@ const AuthController = {
    * @param {object} res
    * @returns {object} response object
    */
-  async signIn(req, res) {
-    let { email, password } = req.body;
-    email = email.toLowerCase();
+  async signIn(req, res, next) {
+    try {
+      let { email, password } = req.body;
+      email = email.toLowerCase();
 
-    const user = await models.User.findOne({ where: { email } });
+      const user = await models.User.findOne({ where: { email } });
 
-    // Email not found or incorrect password input
-    if((!user) || (!compareSync(password, user.dataValues.password))) {
-      return res.status(400).json({
-        status: 400,
-        errorMessage: 'Incorrect login information',
+      // Email not found or incorrect password input
+      if((!user) || (!compareSync(password, user.dataValues.password))) {
+        return res.status(400).json({
+          status: 400,
+          errorMessage: 'Incorrect login information',
+        });
+      }
+
+      const payload = {
+        email,
+        firstName: user.dataValues.firstName,
+        lastName: user.dataValues.lastName,
+        type: user.dataValues.type,
+        isAdmin: user.dataValues.isAdmin,
+        id: user.dataValues.id,
+      };
+      const token = generateToken(payload);
+
+      return res.status(200).json({
+        status: 200,
+        data: {
+          token,
+        },
       });
+    } catch (error) {
+      next(error)
     }
-
-    const payload = {
-      email,
-      firstName: user.dataValues.firstName,
-      lastName: user.dataValues.lastName,
-      type: user.dataValues.type,
-      isAdmin: user.dataValues.isAdmin,
-      id: user.dataValues.id,
-    };
-    const token = generateToken(payload);
-
-    return res.status(200).json({
-      status: 200,
-      data: {
-        token,
-      },
-    });
   },
 };
 
