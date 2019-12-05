@@ -1,0 +1,17 @@
+--- 
+after_success: 
+  - "npm run coverage"
+cache: 
+  directories: 
+    - node_modules
+env: 
+  global: 
+    - "DATABASE_URL=postgres://rtxjfhkg:kO4jGP-XS3rix9BBJFswE7J9XEEuc_gR@isilo.db.elephantsql.com:5432/rtxjfhkg"
+    - SECRET=someverysecretpassword
+language: node_js
+node_js: 
+  - stable
+script: 
+  - "npm test"
+services: 
+  - postgresql
