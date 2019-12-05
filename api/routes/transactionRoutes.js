@@ -5,9 +5,9 @@ import Auth from '../middlewares/auth';
 
 const router = Router();
 
-router.get('/', Auth.isLoggedIn, Auth.isStaff, TransactionController.getAllTransactions);
-router.get('/:id', Auth.isLoggedIn, TransactionController.getTransactionById);
-router.post('/:accountNumber/credit', Auth.isLoggedIn, Auth.isStaff, validateTransaction, TransactionController.creditAccount);
-router.post('/:accountNumber/debit', Auth.isLoggedIn, Auth.isStaff, validateTransaction, TransactionController.debitAccount);
+// router.get('/', Auth.isLoggedIn, Auth.isStaff, TransactionController.getAllTransactions);
+// router.get('/:id', Auth.isLoggedIn, TransactionController.getTransactionById);
+// router.post('/:accountNumber/credit', Auth.isLoggedIn, Auth.isStaff, validateTransaction, TransactionController.creditAccount);
+// router.post('/:accountNumber/debit', Auth.isLoggedIn, Auth.isStaff, validateTransaction, TransactionController.debitAccount);
 
 export default router;

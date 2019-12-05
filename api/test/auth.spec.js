@@ -7,18 +7,18 @@ const { should, expect } = chai;
 
 describe('AUTH', () => {
   describe('SIGN-UP', () => {
-    // it('Should register a new user', async () => {
-    //   const formData = {
-    //     firstName: 'Michael',
-    //     lastName: 'Bridges',
-    //     email: 'michaelbridges2019@yahoo.com',
-    //     password: 'secretMike',
-    //   };
-    //   const res = await chai.request(server).post('/api/v1/auth/signup').send(formData);
-    //   res.should.have.status(201);
-    //   res.body.should.have.property('data');
-    //   res.body.data.should.have.property('token');
-    // });
+    it('Should register a new user', async () => {
+      const formData = {
+        firstName: 'Michael',
+        lastName: 'Bridges',
+        email: 'michaelbridges2019@yahoo.com',
+        password: 'secretMike',
+      };
+      const res = await chai.request(server).post('/api/v1/auth/signup').send(formData);
+      res.should.have.status(201);
+      res.body.should.have.property('data');
+      res.body.data.should.have.property('token');
+    });
 
     it('Should NOT register a user if email exists', async () => {
       const formData = {
@@ -63,7 +63,7 @@ describe('AUTH', () => {
   });
 
   describe('SIGN-IN', () => {
-    it('Should signin a user', async () => {
+    it('Should signin a registered user', async () => {
       const formData = {
         email: 'samo@gmail.com',
         password: 'mysecret',

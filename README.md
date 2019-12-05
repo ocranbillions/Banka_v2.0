@@ -1,7 +1,7 @@
 # Banka v2.0
 Banka is a light-weight core banking application that powers banking operations like account creation, customer deposit and withdrawals. 
 
-[![Build Status](https://travis-ci.org/ocranbillions/banka.svg?branch=develop)](https://travis-ci.org/ocranbillions/banka) [![Coverage Status](https://coveralls.io/repos/github/ocranbillions/banka/badge.svg?branch=develop)](https://coveralls.io/github/ocranbillions/banka?branch=develop) [![Maintainability](https://api.codeclimate.com/v1/badges/7ff9e7a0df839ca0e882/maintainability)](https://codeclimate.com/github/ocranbillions/banka/maintainability)
+[![Build Status](https://travis-ci.com/ocranbillions/Banka_v2.0.svg?branch=develop)](https://travis-ci.com/ocranbillions/Banka_v2.0)
 ## Getting Started
 ### Prerequisites
 The tools listed below are needed to run this application:
