@@ -65,7 +65,7 @@ export const validateSignUp = (req, res, next) => {
   return next();
 }
 
-export const validateSingnIn = (req, res, next) => {
+export const validateSignIn = (req, res, next) => {
   const schema = Joi.object().keys({
     email: Joi.string().regex(/\S+@\S+\.\S+/).min(2).error(() => ({
       message: 'provide a valid email',

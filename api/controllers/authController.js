@@ -46,7 +46,7 @@ const AuthController = {
         data: { token, ...userInfo },
       });
 
-    }catch (error) {
+    } catch (error) {
       next(error);
     }
   },
@@ -63,17 +63,12 @@ const AuthController = {
     email = email.toLowerCase();
 
     const user = await models.User.findOne({ where: { email } });
-    if(!user) {
-      return res.status(404).json({
-        status: 404,
-        errorMessage: 'User not found',
-      });
-    }
 
-    if((!compareSync(password, user.dataValues.password))) {
-      return res.status(404).json({
-        status: 404,
-        errorMessage: 'Wrong password',
+    // Email not found or incorrect password input
+    if((!user) || (!compareSync(password, user.dataValues.password))) {
+      return res.status(400).json({
+        status: 400,
+        errorMessage: 'Incorrect login information',
       });
     }
 
@@ -87,37 +82,12 @@ const AuthController = {
     };
     const token = generateToken(payload);
 
-    return res.status(201).json({
-      status: 201,
+    return res.status(200).json({
+      status: 200,
       data: {
         token,
       },
     });
-
-    // const result = await AuthServices.signIn(req.body);
-    // helpers.checkServerError(result, res);
-
-    // // Wrong email || password
-    // if (result.rows < 1 || !bcrypt.compareSync(req.body.password, result.rows[0].password)) {
-    //   return res.status(400).json({
-    //     status: 400,
-    //     errorMessage: 'Incorrect login information',
-    //   });
-    // }
-    
-
-    // const user = result.rows[0];
-    // const token = helpers.generateToken(user.id, user.email, user.firstname, user.lastname, user.type, user.isadmin);
-    // const {
-    //   id, email, firstname, lastname, type, isadmin,
-    // } = user;
-
-    // return res.status(201).json({
-    //   status: 201,
-    //   data: {
-    //     token, id, email, firstname, lastname, type, isadmin,
-    //   },
-    // });
   },
 };
 
