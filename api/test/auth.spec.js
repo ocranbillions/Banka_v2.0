@@ -1,5 +1,6 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import jwtDecode from 'jwt-decode';
 import server from '../app';
 
 chai.use(chaiHttp);
@@ -18,6 +19,12 @@ describe('AUTH', () => {
       res.should.have.status(201);
       res.body.should.have.property('data');
       res.body.data.should.have.property('token');
+      const user = jwtDecode(res.body.data.token)
+      expect(user).to.include({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,  
+      });
     });
 
     it('Should NOT register a user if email exists', async () => {
@@ -29,8 +36,8 @@ describe('AUTH', () => {
       };
       const res = await chai.request(server).post('/api/v1/auth/signup').send(formData);
       res.should.have.status(409);
-      res.body.should.have.property('errorMessage');
-      res.body.errorMessage.should.equal('Email already used');
+      res.body.should.have.property('message');
+      res.body.message.should.equal('Email not available');
     });
 
     it('Should NOT register user with incomplete form data', async () => {
@@ -42,9 +49,9 @@ describe('AUTH', () => {
       };
       const res = await chai.request(server).post('/api/v1/auth/signup').send(formData);
       res.should.have.status(400);
-      res.body.should.have.property('errorMessage');
-      res.body.errorMessage.should.be.a('array');
-      res.body.errorMessage[0].should.equal('name requires alphabets only - min(2)');
+      res.body.should.have.property('message');
+      res.body.message.should.be.a('array');
+      res.body.message[0].should.equal('name requires alphabets only - min(2)');
     });
 
     it('Should NOT register user with invalid form inputs', async () => {
@@ -56,9 +63,9 @@ describe('AUTH', () => {
       };
       const res = await chai.request(server).post('/api/v1/auth/signup').send(formData);
       res.should.have.status(400);
-      res.body.should.have.property('errorMessage');
-      res.body.errorMessage.should.be.a('array');
-      res.body.errorMessage[2].should.equal('provide a valid email');
+      res.body.should.have.property('message');
+      res.body.message.should.be.a('array');
+      res.body.message[2].should.equal('provide a valid email');
     });
   });
 
@@ -69,9 +76,11 @@ describe('AUTH', () => {
         password: 'mysecret',
       };
       const res = await chai.request(server).post('/api/v1/auth/signin').send(formData);
+      res.should.have.status(200);
       res.body.should.have.property('data');
       res.body.data.should.have.property('token');
-      res.should.have.status(200);
+      const user = jwtDecode(res.body.data.token)
+      expect(user).to.include({ email: formData.email });
     });
 
     it('Should NOT signin an email account that doesnt exist in the db', async () => {
@@ -81,8 +90,8 @@ describe('AUTH', () => {
       };
       const res = await chai.request(server).post('/api/v1/auth/signin').send(formData);
       res.should.have.status(400);
-      res.body.should.have.property('errorMessage');
-      res.body.errorMessage.should.equal('Incorrect login information');
+      res.body.should.have.property('message');
+      res.body.message.should.equal('Incorrect login information');
     });
 
     it('Should NOT signin an existing user with incorrect password', async () => {
@@ -92,8 +101,8 @@ describe('AUTH', () => {
       };
       const res = await chai.request(server).post('/api/v1/auth/signin').send(formData);
       res.should.have.status(400);
-      res.body.should.have.property('errorMessage');
-      res.body.errorMessage.should.equal('Incorrect login information');
+      res.body.should.have.property('message');
+      res.body.message.should.equal('Incorrect login information');
     });
 
     it('Should NOT signin with incomplete form data', async () => {
@@ -103,10 +112,10 @@ describe('AUTH', () => {
       };
       const res = await chai.request(server).post('/api/v1/auth/signin').send(formData);
       res.should.have.status(400);
-      res.body.should.have.property('errorMessage');
-      res.body.errorMessage.should.be.a('array');
-      res.body.errorMessage[0].should.equal('provide a valid email');
-      res.body.errorMessage[1].should.equal('"password" is not allowed to be empty');
+      res.body.should.have.property('message');
+      res.body.message.should.be.a('array');
+      res.body.message[0].should.equal('provide a valid email');
+      res.body.message[1].should.equal('"password" is not allowed to be empty');
     });
   });
 });

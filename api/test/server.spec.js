@@ -7,7 +7,7 @@ import server from '../app';
 chai.use(chaiHttp);
 const should = chai.should();
 
-describe('https://my-banka.herokuapp.com', () => {
+describe('/', () => {
   it('display Welcome to Banka!', async () => {
     const res = await chai.request(server).get('/');
     res.should.have.status(200);

@@ -43,10 +43,22 @@ module.exports = {
         type: 'client',
         isAdmin: false,
         password: 'somerandompassword'
+      },
+      {
+        firstName: 'test',
+        lastName: 'user',
+        email: 'test@yahoo.com',
+        type: 'client',
+        isAdmin: false,
+        password: 'somerandompassword'
       }
     ], {});
     
   },
+
+// ADMIN mikejones@gmail.com password = somesecret 
+// STAFF samo@gmail.com password = mysecret
+// CLIENT joe@gmail.com = joeboy123
 
   down: (queryInterface, Sequelize) => {
   

@@ -1,101 +1,65 @@
 import { hashSync, compareSync } from 'bcryptjs';
-import { generateToken } from '../helpers/helpers';
-import models from '../database/models';
+import { User } from '../database/models';
+import generateToken from '../utils/generateToken';
+import Util from '../utils/util';
 
-const AuthController = {
+const util = new Util();
 
-  /**
-   * @description sign up a new user
-   * @method signUp
-   * @param {object} req
-   * @param {object} res
-   * @returns {object} response object
-   */
-  async signUp(req, res, next) {
-    try {
-      let {
-        firstName, lastName, email, password
-      } = req.body;
-      email = email.toLowerCase();
+export const signUp = async (req, res, next) => {
+  try {
+    const { firstName, lastName, email, password } = req.body;
+    const lowerCasedEmail = email.toLowerCase();
 
-      const emailFound = await models.User.findOne({ where: { email } });
-      if (emailFound) {
-        
-        console.log(emailFound.dataValues)
-        // email not available
-        return res.status(409).json({
-          status: 409,
-          errorMessage: 'Email already used',
-        });
-      }
-
-      const pwdHash = hashSync(password, 10);
-      const userInfo = { ...req.body, email, password: pwdHash };
-      const user = await models.User.create({
-        ...req.body, email, password: pwdHash });
-
-      const payload = {
-        email,
-        firstName,
-        lastName,
-        type: 'client',
-        isAdmin: false,
-        id: user.dataValues.id,
-      };
-      const token = generateToken(payload);
-
-      return res.status(201).json({
-        status: 201,
-        data: { token, ...userInfo },
-      });
-
-    } catch (error) {
-      next(error);
+    const emailFound = await User.findOne({ where: { email: lowerCasedEmail } });
+    if (emailFound) {
+      util.setError(409, 'Email not available');
+      return util.send(res);
     }
-  },
 
-  /**
-   * @description sign in a user
-   * @method signIn
-   * @param {object} req
-   * @param {object} res
-   * @returns {object} response object
-   */
-  async signIn(req, res, next) {
-    try {
-      let { email, password } = req.body;
-      email = email.toLowerCase();
+    const pwdHash = hashSync(password, 10);
+    const user = await User.create({
+      ...req.body, email: lowerCasedEmail, password: pwdHash });
 
-      const user = await models.User.findOne({ where: { email } });
+    const payload = {
+      firstName,
+      lastName,
+      email: lowerCasedEmail,
+      type: 'client',
+      isAdmin: false,
+      id: user.dataValues.id,
+    };
+    const token = generateToken(payload);
+    util.setSuccess(201, { token });
+    return util.send(res);
 
-      // Email not found or incorrect password input
-      if((!user) || (!compareSync(password, user.dataValues.password))) {
-        return res.status(400).json({
-          status: 400,
-          errorMessage: 'Incorrect login information',
-        });
-      }
+  } catch (error) { next(error); }
+}
 
-      const payload = {
-        email,
-        firstName: user.dataValues.firstName,
-        lastName: user.dataValues.lastName,
-        type: user.dataValues.type,
-        isAdmin: user.dataValues.isAdmin,
-        id: user.dataValues.id,
-      };
-      const token = generateToken(payload);
 
-      return res.status(200).json({
-        status: 200,
-        data: {
-          token,
-        },
-      });
-    } catch (error) {
-      next(error)
+export const signIn = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const lowerCasedEmail = email.toLowerCase();
+
+    const user = await User.findOne({ where: { email: lowerCasedEmail } });
+
+    // Incorrect email || Incorrect password
+    if((!user) || (!compareSync(password, user.dataValues.password))) {
+      util.setError(400, 'Incorrect login information');
+      return util.send(res);
     }
-  },
-};
 
-export default AuthController;
+    const payload = {
+      firstName: user.dataValues.firstName,
+      lastName: user.dataValues.lastName,
+      email: lowerCasedEmail,
+      type: user.dataValues.type,
+      isAdmin: user.dataValues.isAdmin,
+      id: user.dataValues.id,
+    };
+    const token = generateToken(payload);
+    util.setSuccess(200, { token });
+    return util.send(res);
+
+  } catch (error) { next(error); }
+}
