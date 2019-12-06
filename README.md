@@ -1,7 +1,7 @@
 # Banka v2.0
 Banka is a light-weight core banking application that powers banking operations like account creation, customer deposit and withdrawals. 
 
-[![Build Status](https://travis-ci.com/ocranbillions/Banka_v2.0.svg?branch=develop)](https://travis-ci.com/ocranbillions/Banka_v2.0) [![Coverage Status](https://coveralls.io/repos/github/ocranbillions/Banka_v2.0/badge.svg?branch=develop)](https://coveralls.io/github/ocranbillions/Banka_v2.0?branch=develop) [![Maintainability](https://api.codeclimate.com/v1/badges/4c600fc965c6d7b6098e/maintainability)](https://codeclimate.com/github/ocranbillions/Banka_v2.0/maintainability)
+[![Build Status](https://travis-ci.com/ocranbillions/Banka_v2.0.svg?branch=develop)](https://travis-ci.com/ocranbillions/Banka_v2.0) [![Coverage Status](https://coveralls.io/repos/github/ocranbillions/Banka_v2.0/badge.svg?branch=develop)](https://coveralls.io/github/ocranbillions/Banka_v2.0?branch=develop) [![Maintainability](https://api.codeclimate.com/v1/badges/4c600fc965c6d7b6098e/maintainability)](https://codeclimate.com/github/ocranbillions/Banka_v2.0/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/4c600fc965c6d7b6098e/test_coverage)](https://codeclimate.com/github/ocranbillions/Banka_v2.0/test_coverage)
 ## Getting Started
 ### Prerequisites
 The tools listed below are needed to run this application:
