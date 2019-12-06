@@ -8,7 +8,7 @@ export default {
     if (!req.headers.authorization) {
       return res.status(401).json({
         status: 401,
-        errorMessage: 'You must be logged in to access this route',
+        message: 'You must be logged in to access this route',
       });
     }
 
@@ -16,7 +16,7 @@ export default {
     if (!token) {
       return res.status(401).json({
         status: 401,
-        errorMessage: 'Invalid token',
+        message: 'Invalid token',
       });
     }
     try {
@@ -26,16 +26,16 @@ export default {
     } catch (error) {
       return res.status(401).json({
         status: 401,
-        errorMessage: 'Auth failed!',
+        message: 'Auth failed!',
       });
     }
   },
 
   isAdmin(req, res, next) {
-    if (req.userData.isadmin === false) {
+    if (req.userData.isAdmin === false) {
       return res.status(403).json({
         status: 403,
-        errorMessage: 'Forbidden: You are not an admin',
+        message: 'Forbidden: You are not an admin',
       });
     }
     return next();
@@ -45,7 +45,7 @@ export default {
     if (req.userData.type !== 'staff') {
       return res.status(403).json({
         status: 403,
-        errorMessage: 'Forbidden: The requested page can only be accessed by a staff',
+        message: 'Forbidden: The requested page can only be accessed by a staff',
       });
     }
     return next();

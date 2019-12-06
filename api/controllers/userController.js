@@ -1,147 +1,149 @@
-// import UserServices from '../services/userServices';
-// import helpers from '../helpers/helpers';
+import { hashSync } from 'bcryptjs';
+import { User } from '../database/models';
+import Util from '../utils/util';
 
-// const UserController = {
+const util = new Util();
 
-//   /**
-//   * @description get all users
-//   * @param {object} req
-//   * @param {object} res
-//   * @returns {object} response object
-//   */
-//   async getUsers(req, res) {
-//     const result = await UserServices.getUsers();
-//     helpers.checkServerError(result, res);
+/**
+* @description gets all users
+* @param {object} req
+* @param {object} res
+* @returns {object} response object
+*/
+export const getUsers = async (req, res, next) => {
+  try {
+    const users = await User.findAll({
+      attributes: ['id', 'firstName', 'lastName', 'email', 'type', 'isAdmin', 'createdAt'],
+      order: [ ['createdAt', 'ASC'], ],
+    });
 
-//     return res.status(200).json({
-//       status: 200,
-//       data: result.rows,
+    util.setSuccess(200, { users });
+    return util.send(res);
+  } catch (error) { next(error) }
+}
+
+
+/**
+* @description get a user
+* @param {object} req
+* @param {object} res
+* @returns {object} response object
+*/
+export const getUserByID = async (req, res, next) => {
+  try {
+    // Check for authorization
+    if (req.userData.id != req.params.id && req.userData.type !== 'staff') {
+        util.setError(403, 'Forbidden: You are not allowed to view this profile');
+        return util.send(res);
+    }
+
+    const user = await User.findByPk(req.params.id, {
+      attributes: ['id', 'firstName', 'lastName', 'email', 'type', 'isAdmin', 'createdAt'],
+    });
+
+    if(!user) {
+      util.setError(404, 'The user with the given number was not found');
+      return util.send(res);
+    }
+
+    util.setSuccess(200, { user });
+    return util.send(res);
+  } catch (error) { next(error) }
+}
+
+// /**
+//  * @description get all bank accounts owned by a user
+//  * @param {object} req
+//  * @param {object} res
+//  * @returns {object} response object
+//  */
+// async getAccountsByOwnerEmail(req, res) {
+// // Lookup email
+// const email = req.params.owneremail.toLowerCase();
+// const resp = await UserServices.getUserByEmail(email);
+// helpers.checkServerError(resp, res);
+
+// if (resp.rows < 1) {
+//     return res.status(404).json({
+//     status: 404,
+//     errorMessage: 'The user with the given email was not found',
 //     });
-//   },
+// }
 
-//   /**
-//   * @description get a user
-//   * @param {object} req
-//   * @param {object} res
-//   * @returns {object} response object
-//   */
-//   async getUserByID(req, res) {
-//     const result = await UserServices.getUserByID(req.params.id);
-//     helpers.checkServerError(result, res);
+// const result = await UserServices.getAccountsByOwnerEmail(email);
+// helpers.checkServerError(result, res);
 
-//     if (result.rows < 1) {
-//       return res.status(404).json({
-//         status: 404,
-//         errorMessage: 'The user with the given number was not found',
-//       });
-//     }
-//     // Check for authorization
-//     const profileID = result.rows[0].id;
-//     if (req.userData.id !== profileID && req.userData.type !== 'staff') {
-//       return res.status(403).json({
-//         status: 403,
-//         errorMessage: 'Forbidden: You are not allowed to view this profile',
-//       });
-//     }
-//     // Return retrived user
-//     const user = result.rows[0];
-//     return res.json({
-//       status: 200,
-//       data: user,
+// if (result.rows < 1) {
+//     return res.status(404).json({
+//     status: 404,
+//     errorMessage: 'No accounts for this user yet',
 //     });
-//   },
-
-//   /**
-//   * @description get all bank accounts owned by a user
-//   * @param {object} req
-//   * @param {object} res
-//   * @returns {object} response object
-//   */
-//   async getAccountsByOwnerEmail(req, res) {
-//     // Lookup email
-//     const email = req.params.owneremail.toLowerCase();
-//     const resp = await UserServices.getUserByEmail(email);
-//     helpers.checkServerError(resp, res);
-
-//     if (resp.rows < 1) {
-//       return res.status(404).json({
-//         status: 404,
-//         errorMessage: 'The user with the given email was not found',
-//       });
-//     }
-
-//     const result = await UserServices.getAccountsByOwnerEmail(email);
-//     helpers.checkServerError(result, res);
-
-//     if (result.rows < 1) {
-//       return res.status(404).json({
-//         status: 404,
-//         errorMessage: 'No accounts for this user yet',
-//       });
-//     }
-//     // Check for authorization
-//     const ownerEmail = result.rows[0].owneremail;
-//     if (req.userData.email !== ownerEmail && req.userData.type !== 'staff') {
-//       return res.status(403).json({
-//         status: 403,
-//         errorMessage: 'Forbidden: You are not allowed to access these accounts',
-//       });
-//     }
-
-//     // Return retrived account
-//     const accounts = result.rows;
-//     return res.json({
-//       status: 200,
-//       data: accounts,
+// }
+// // Check for authorization
+// const ownerEmail = result.rows[0].owneremail;
+// if (req.userData.email !== ownerEmail && req.userData.type !== 'staff') {
+//     return res.status(403).json({
+//     status: 403,
+//     errorMessage: 'Forbidden: You are not allowed to access these accounts',
 //     });
-//   },
+// }
 
-//   /**
-//   * @description admin can create a new staff
-//   * @method addStaff
-//   * @param {object} req
-//   * @param {object} res
-//   * @returns {object} response object
-//   */
-//   async createStaff(req, res) {
-//     const result = await UserServices.createStaff(req.body);
-//     if (result.constraint === 'users_email_key') {
-//       return res.status(409).json({
-//         status: 409,
-//         errorMessage: 'Email already used',
-//       });
-//     }
-//     // Return newly created staff
-//     const newStaff = result;
-//     return res.status(201).json({
-//       status: 201,
-//       data: newStaff,
-//     });
-//   },
+// // Return retrived account
+// const accounts = result.rows;
+// return res.json({
+//     status: 200,
+//     data: accounts,
+// });
+// },
 
-//   /**
-//   * @description admin can create a new staff
-//   * @method addStaff
-//   * @param {object} req
-//   * @param {object} res
-//   * @returns {object} response object
-//   */
-//   async deleteUser(req, res) {
-//     const result = await UserServices.deleteUser(req.params.id);
-//     helpers.checkServerError(result, res);
+/**
+ * @description admin can create a new staff
+ * @method addStaff
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} response object
+ */
+export const createStaff = async (req, res, next) => {
+  try {
+  const {  email, password } = req.body;
+  const lowerCasedEmail = email.toLowerCase();
 
-//     if (result.rowCount < 1) {
-//       return res.status(404).json({
-//         status: 404,
-//         errorMessage: 'The user with the given number was not found',
-//       });
-//     }
-//     return res.status(200).json({
-//       status: 200,
-//       message: 'User successfully deleted',
-//     });
-//   },
+  const emailFound = await User.findOne({ where: { email: lowerCasedEmail } });
+  if (emailFound) {
+    util.setError(409, 'Email not available');
+    return util.send(res);
+  }
 
-// };
+  const pwdHash = hashSync(password, 10);
+  const staff = await User.create({
+    ...req.body,
+    email: lowerCasedEmail,
+    password: pwdHash,
+    type: 'staff'
+  });
+  
+  util.setSuccess(201, { user: staff });
+  return util.send(res);
+  } catch (error) { next(error) }
+}
 
-// export default UserController;
+
+/**
+ * @description admin can delete a user
+ * @method deleteUser
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} response object
+ */
+export const deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.destroy({ where: { id: req.params.id }});
+    if(!user) {
+      util.setError(404, 'The user with the given number was not found');
+      return util.send(res);
+    }
+  
+    util.setSuccess(200, 'User successfully deleted');
+    return util.send(res);
+  } catch (error) { next(error) }
+}

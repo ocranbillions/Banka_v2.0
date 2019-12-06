@@ -19,7 +19,7 @@ export const validateNewStaff = (req, res, next) => {
     const error = result.error.details.map(d => d.message);
     return res.status(400).json({
       status: 400,
-      errorMessage: error,
+      message: error,
     });
   }
   return next();
@@ -35,7 +35,7 @@ export const validateNewAccount = (req, res, next) => {
     const error = result.error.details.map(d => d.message);
     return res.status(400).json({
       status: 400,
-      errorMessage: error,
+      message: error,
     });
   }
   return next();
@@ -59,7 +59,7 @@ export const validateSignUp = (req, res, next) => {
     const error = result.error.details.map(d => d.message);
     return res.status(400).json({
       status: 400,
-      errorMessage: error,
+      message: error,
     });
   }
   return next();
@@ -77,7 +77,7 @@ export const validateSignIn = (req, res, next) => {
     const error = result.error.details.map(d => d.message);
     return res.status(400).json({
       status: 400,
-      errorMessage: error,
+      message: error,
     });
   }
   return next();
@@ -91,7 +91,7 @@ export const validateTransaction = (req, res, next) => {
   if (result.error) {
     return res.status(400).json({
       status: 400,
-      errorMessage: result.error.message,
+      message: result.error.message,
     });
   }
   return next();
