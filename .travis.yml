@@ -9,5 +9,7 @@ before_script:
   - npm install -g sequelize-cli
 script: 
   - "npm test"
+  - "npm run coveralls-coverage"
+  - "npm run codeclimate-coverage"
 services: 
   - postgresql
