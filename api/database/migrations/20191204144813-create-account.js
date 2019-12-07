@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('accounts', {
+    return queryInterface.createTable('Accounts', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -9,15 +9,15 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       accountNumber: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
         allowNull: false,
       },
-      ownerEmail: {
+      accountOwner: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      type: {
-        type: Sequelize.STRING,
+      accountType: {
+        type: Sequelize.ENUM('savings', 'current'),
         allowNull: false,
       },
       balance: {
@@ -25,7 +25,8 @@ module.exports = {
         allowNull: false,
       },
       status: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM('draft', 'active', 'dormant'),
+        defaultValue: 'draft',
         allowNull: false,
       },
       createdAt: {
@@ -41,7 +42,7 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('accounts');
+    return queryInterface.dropTable('Accounts');
   }
 };
 

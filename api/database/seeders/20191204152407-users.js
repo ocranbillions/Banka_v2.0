@@ -61,8 +61,6 @@ module.exports = {
 // CLIENT joe@gmail.com = joeboy123
 
   down: (queryInterface, Sequelize) => {
-  
     return queryInterface.bulkDelete('Users', null, {});
-
   }
 };

@@ -27,7 +27,7 @@ export const validateNewStaff = (req, res, next) => {
 
 export const validateNewAccount = (req, res, next) => {
   const schema = Joi.object().keys({
-    type: Joi.string().valid('savings', 'current').required(),
+    accountType: Joi.string().valid('savings', 'current').required(),
     openingBalance: Joi.number().min(1000).required(),
   });
   const result = schema.validate(req.body, { abortEarly: false });

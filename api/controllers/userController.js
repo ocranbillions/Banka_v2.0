@@ -51,50 +51,6 @@ export const getUserByID = async (req, res, next) => {
   } catch (error) { next(error) }
 }
 
-// /**
-//  * @description get all bank accounts owned by a user
-//  * @param {object} req
-//  * @param {object} res
-//  * @returns {object} response object
-//  */
-// async getAccountsByOwnerEmail(req, res) {
-// // Lookup email
-// const email = req.params.owneremail.toLowerCase();
-// const resp = await UserServices.getUserByEmail(email);
-// helpers.checkServerError(resp, res);
-
-// if (resp.rows < 1) {
-//     return res.status(404).json({
-//     status: 404,
-//     errorMessage: 'The user with the given email was not found',
-//     });
-// }
-
-// const result = await UserServices.getAccountsByOwnerEmail(email);
-// helpers.checkServerError(result, res);
-
-// if (result.rows < 1) {
-//     return res.status(404).json({
-//     status: 404,
-//     errorMessage: 'No accounts for this user yet',
-//     });
-// }
-// // Check for authorization
-// const ownerEmail = result.rows[0].owneremail;
-// if (req.userData.email !== ownerEmail && req.userData.type !== 'staff') {
-//     return res.status(403).json({
-//     status: 403,
-//     errorMessage: 'Forbidden: You are not allowed to access these accounts',
-//     });
-// }
-
-// // Return retrived account
-// const accounts = result.rows;
-// return res.json({
-//     status: 200,
-//     data: accounts,
-// });
-// },
 
 /**
  * @description admin can create a new staff
@@ -105,25 +61,25 @@ export const getUserByID = async (req, res, next) => {
  */
 export const createStaff = async (req, res, next) => {
   try {
-  const {  email, password } = req.body;
-  const lowerCasedEmail = email.toLowerCase();
+    const {  email, password } = req.body;
+    const lowerCasedEmail = email.toLowerCase();
 
-  const emailFound = await User.findOne({ where: { email: lowerCasedEmail } });
-  if (emailFound) {
-    util.setError(409, 'Email not available');
+    const emailFound = await User.findOne({ where: { email: lowerCasedEmail } });
+    if (emailFound) {
+      util.setError(409, 'Email not available');
+      return util.send(res);
+    }
+
+    const pwdHash = hashSync(password, 10);
+    const staff = await User.create({
+      ...req.body,
+      email: lowerCasedEmail,
+      password: pwdHash,
+      type: 'staff'
+    });
+    
+    util.setSuccess(201, { user: staff });
     return util.send(res);
-  }
-
-  const pwdHash = hashSync(password, 10);
-  const staff = await User.create({
-    ...req.body,
-    email: lowerCasedEmail,
-    password: pwdHash,
-    type: 'staff'
-  });
-  
-  util.setSuccess(201, { user: staff });
-  return util.send(res);
   } catch (error) { next(error) }
 }
 

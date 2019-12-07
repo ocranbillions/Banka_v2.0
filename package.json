@@ -11,6 +11,8 @@
     "migrate": "sequelize db:migrate",
     "migrate:undo": "sequelize db:migrate:undo:all",
     "seed": "sequelize db:seed:all",
+    "seed:undo": "sequelize db:seed:undo:all",
+    "reset:db": "npm run migrate:undo && npm run migrate && npm run seed",
     "coveralls-coverage": "nyc report --reporter=text-lcov | coveralls",
     "codeclimate-coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter"
   },
