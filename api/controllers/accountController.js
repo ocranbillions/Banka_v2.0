@@ -1,178 +1,215 @@
-// import AccountServices from '../services/accountServices';
-// import helpers from '../helpers/helpers';
+import { Account } from '../database/models';
+import generateAccountNumber from '../utils/accountNumberGenerator';
+import Util from '../utils/util';
 
-// const AccountController = {
-
-//   /**
-//    * @description get all bank accounts
-//    * @method getAccounts
-//    * @param {object} req
-//    * @param {object} res
-//    * @returns {object} response object
-//    */
-//   async getAccounts(req, res) {
-//     const result = await AccountServices.getAccounts(req.query);
-//     helpers.checkServerError(result, res);
-
-//     return res.json({
-//       status: 200,
-//       data: result.rows,
-//     });
-//   },
+const util = new Util();
 
 
-//   /**
-//    * @description get a single account
-//    * @method getSingleAccount
-//    * @param {object} req
-//    * @param {object} res
-//    * @returns {object} response object
-//    */
-//   async getSingleAccount(req, res) {
-//     const result = await AccountServices.getSingleAccount(req.params.accountNumber);
+/**
+ * @description get all bank accounts
+ * @method getAccounts
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} response object
+ */
+export const getAccounts = async (req, res, next) => {
+  try {
+    const accounts = await Account.findAll();
+
+    util.setSuccess(200, { accounts });
+    return util.send(res);
+  } catch (error) { next(error) }
+}
+
+// /**
+//  * @description get all bank accounts owned by a user
+//  * @param {object} req
+//  * @param {object} res
+//  * @returns {object} response object
+//  */
+// export const getAccountsByEmail = async (req, res, next) => {
+//   try {
+//     // Lookup email
+//     const email = req.params.email.toLowerCase();
+//     const resp = await UserServices.getUserByEmail(email);
+//     helpers.checkServerError(resp, res);
+
+//     if (resp.rows < 1) {
+//         return res.status(404).json({
+//         status: 404,
+//         errorMessage: 'The user with the given email was not found',
+//         });
+//     }
+
+//     const result = await UserServices.getAccountsByOwnerEmail(email);
 //     helpers.checkServerError(result, res);
 
 //     if (result.rows < 1) {
-//       return res.status(404).json({
+//         return res.status(404).json({
 //         status: 404,
-//         errorMessage: 'The account with the given number was not found',
-//       });
+//         errorMessage: 'No accounts for this user yet',
+//         });
 //     }
-//     // check for authorization
+//     // Check for authorization
 //     const ownerEmail = result.rows[0].owneremail;
 //     if (req.userData.email !== ownerEmail && req.userData.type !== 'staff') {
-//       return res.status(403).json({
+//         return res.status(403).json({
 //         status: 403,
-//         errorMessage: `Forbidden: Account ${req.params.accountNumber} doesn't belong to you`,
-//       });
+//         errorMessage: 'Forbidden: You are not allowed to access these accounts',
+//         });
 //     }
+
 //     // Return retrived account
-//     const account = result.rows[0];
+//     const accounts = result.rows;
 //     return res.json({
-//       status: 200,
-//       data: account,
+//         status: 200,
+//         data: accounts,
 //     });
-//   },
+//   } catch (error) { next(error) }
+// }
 
 
-//   /**
-//    * @description get all transactions on a given account
-//    * @method getAccountTransactions
-//    * @param {object} req
-//    * @param {object} res
-//    * @returns {object} response object
-//    */
-//   async getAccountTransactions(req, res) {
-//     const resp = await AccountServices.getSingleAccount(req.params.accountNumber);
-//     helpers.checkServerError(resp, res);
-//     if (resp.rows < 1) {
-//       return res.status(404).json({
-//         status: 404,
-//         errorMessage: 'The account with the given number was not found',
-//       });
-//     }
+/**
+ * @description get a single account
+ * @method getSingleAccount
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} response object
+ */
+export const getSingleAccount = async (req, res, next) => {
+  try {
+    const account = await Account.findOne({ where: { accountNumber: req.params.accountNumber } });
+    if (!account) {
+      util.setError(404, 'The account with the given number was not found');
+      return util.send(res);
+    }
+    // check for authorization
+    const ownerEmail = account.accountOwner;
+    if (req.userData.email !== ownerEmail && req.userData.type !== 'staff') {
+      util.setError(403, 'Forbidden: You are not allowed to access this account');
+      return util.send(res);
+    }
 
-//     // check for authorization
-//     const ownerEmail = resp.rows[0].owneremail;
-//     if (req.userData.email !== ownerEmail && req.userData.type !== 'staff') {
-//       return res.status(403).json({
-//         status: 403,
-//         errorMessage: `Forbidden: Account ${req.params.accountNumber} doesn't belong to you`,
-//       });
-//     }
-//     const result = await AccountServices.getAccountTransactions(req.params.accountNumber);
-//     helpers.checkServerError(result, res);
+    util.setSuccess(200, { account });
+    return util.send(res);
+  } catch (error) { next(error) }
+}
 
-//     if (result.rows < 1) {
-//       return res.status(404).json({
-//         status: 404,
-//         errorMessage: 'No transactions yet on this account',
-//       });
-//     }
-//     const transactions = result.rows;
-//     return res.json({
-//       status: 200,
-//       data: transactions,
+
+// /**
+//  * @description get all transactions on a given account
+//  * @method getAccountTransactions
+//  * @param {object} req
+//  * @param {object} res
+//  * @returns {object} response object
+//  */
+// async getAccountTransactions(req, res) {
+// const resp = await AccountServices.getSingleAccount(req.params.accountNumber);
+// helpers.checkServerError(resp, res);
+// if (resp.rows < 1) {
+//     return res.status(404).json({
+//     status: 404,
+//     errorMessage: 'The account with the given number was not found',
 //     });
-//   },
+// }
 
-//   /**
-//    * @description deletes an account
-//    * @method deleteAccount
-//    * @param {object} req
-//    * @param {object} res
-//    * @returns {object} response object
-//    */
-//   async createAccount(req, res) {
-//     const result = await AccountServices.createAccount(req.body, req.userData);
-//     helpers.checkServerError(result, res);
-
-//     // Return newly created account
-//     const newAccount = result.rows[0];
-//     return res.status(201).json({
-//       status: 201,
-//       data: newAccount,
+// // check for authorization
+// const ownerEmail = resp.rows[0].owneremail;
+// if (req.userData.email !== ownerEmail && req.userData.type !== 'staff') {
+//     return res.status(403).json({
+//     status: 403,
+//     errorMessage: `Forbidden: Account ${req.params.accountNumber} doesn't belong to you`,
 //     });
-//   },
+// }
+// const result = await AccountServices.getAccountTransactions(req.params.accountNumber);
+// helpers.checkServerError(result, res);
 
-//   /**
-//    * @description deletes an account
-//    * @method deleteAccount
-//    * @param {object} req
-//    * @param {object} res
-//    * @returns {object} response object
-//    */
-//   async deleteAccount(req, res) {
-//     const result = await AccountServices.deleteAccount(req.params.accountNumber);
-//     helpers.checkServerError(result, res);
-
-//     if (result.rowCount < 1) {
-//       return res.status(404).json({
-//         status: 404,
-//         errorMessage: 'The account with the given number was not found',
-//       });
-//     }
-//     return res.status(202).json({
-//       status: 202,
-//       message: 'Account successfully deleted',
+// if (result.rows < 1) {
+//     return res.status(404).json({
+//     status: 404,
+//     errorMessage: 'No transactions yet on this account',
 //     });
-//   },
+// }
+// const transactions = result.rows;
+// return res.json({
+//     status: 200,
+//     data: transactions,
+// });
+// },
 
-//   /**
-//   * @description change an account status
-//   * @method changeAccountStatus
-//   * @param {object} req
-//   * @param {object} res
-//   * @returns {object} response object
-//   */
-//   async changeAccountStatus(req, res) {
-//     if (req.body.status !== 'active' && req.body.status !== 'dormant') {
-//       return res.status(400).json({
-//         status: 400,
-//         errorMessage: 'Status can only be active or dormant',
-//       });
-//     }
+/**
+ * @description creates an account
+ * @method createAccount
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} response object
+ */
+export const createAccount = async(req, res, next) => {
+  try {
+    const {  accountType, openingBalance } = req.body;
+    const accountOwner = req.userData.email;
+    const accountNumber = generateAccountNumber();
+    const balance = Number.parseFloat(openingBalance).toFixed(2);
 
-//     const result = await AccountServices.changeAccountStatus(req.params.accountNumber, req.body.status);
-//     helpers.checkServerError(result, res);
+    const account = await Account.create({
+      accountNumber,
+      accountOwner,
+      accountType,
+      balance
+    });
 
-//     if (result.rowCount < 1) {
-//       return res.status(404).json({
-//         status: 404,
-//         errorMessage: 'The account with the given number was not found',
-//       });
-//     }
+    util.setSuccess(201, { account });
+    return util.send(res);
+  } catch (error) { next(error) }
+}
 
-//     const account = result.rows[0];
-//     return res.status(201).json({
-//       status: 201,
-//       data: {
-//         accountNumber: account.accountnumber,
-//         status: account.status,
-//       },
-//     });
-//   },
+/**
+ * @description deletes an account
+ * @method deleteAccount
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} response object
+ */
+export const deleteAccount = async (req, res, next) => {
+  try{
+    const account = await Account.destroy({ where: { accountNumber: req.params.accountNumber } });
+    if(!account) {
+      util.setError(404, 'The account with the given number was not found');
+      return util.send(res);
+    }
+  
+    util.setSuccess(200, 'Account successfully deleted');
+    return util.send(res);
+  } catch (error) { next(error) }
+}
 
-// };
 
-// export default AccountController;
+/**
+ * @description change an account status
+ * @method changeAccountStatus
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} response object
+ */
+export const changeAccountStatus = async(req, res, next) => {
+  try {
+    if (req.body.status !== 'active' && req.body.status !== 'dormant') {
+      util.setError(400, 'set status: active || dormant');
+      return util.send(res);
+    }
+    const { status } = req.body;
+    const accounts = await Account.update(
+      { status },
+      { returning: true,
+        where: { accountNumber: req.params.accountNumber } }
+    );
+
+    if (accounts[0] === 0) {
+      util.setError(404, 'The account with the given number was not found');
+      return util.send(res);
+    }
+
+    util.setSuccess(200, { account: accounts[1][0].dataValues });
+    return util.send(res);
+  } catch (error) { next(error) }
+}

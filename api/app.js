@@ -26,7 +26,7 @@ server.get('/', (req, res) => {
 
 server.use('/api/v1/auth', authRoutes);
 server.use('/api/v1/users', userRoutes);
-// server.use('/api/v1/accounts', accountRoutes);
+server.use('/api/v1/accounts', accountRoutes);
 // server.use('/api/v1/transactions', transactionRoutes);
 
 server.use((error, req, res, next) => {

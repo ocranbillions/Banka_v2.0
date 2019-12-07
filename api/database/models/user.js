@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     type: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM('admin', 'staff', 'client'),
       defaultValue: 'client',
     },
     isAdmin: {

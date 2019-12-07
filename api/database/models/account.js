@@ -2,16 +2,16 @@
 module.exports = (sequelize, DataTypes) => {
   const Account = sequelize.define('Account', {
     accountNumber: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       unique: true,
       allowNull: false,
     },
-    ownerEmail: {
+    accountOwner: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    type: {
-      type: DataTypes.STRING,
+    accountType: {
+      type: DataTypes.ENUM('savings', 'current'),
       allowNull: false,
     },
     balance: {
@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     status: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM('draft', 'active', 'dormant'),
+      defaultValue: 'draft',
       allowNull: false,
     },
   }, {});
