@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('transactions', {
+    return queryInterface.createTable('Transactions', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -9,12 +9,15 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       accountNumber: {
-        type: Sequelize.INTEGER,
-        unique: true,
+        type: Sequelize.BIGINT,
         allowNull: false,
       },
       amount: {
         type: Sequelize.FLOAT,
+        allowNull: false,
+      },
+      type: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       cashier: {
@@ -27,6 +30,10 @@ module.exports = {
       },
       newBalance: {
         type: Sequelize.FLOAT,
+        allowNull: false,
+      },
+      accountEmail: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       createdAt: {
@@ -42,6 +49,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('transactions');
+    return queryInterface.dropTable('Transactions');
   }
 };

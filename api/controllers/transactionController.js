@@ -1,66 +1,53 @@
+import { Account, Transaction } from '../database/models';
+import Util from '../utils/util';
+
+const util = new Util();
 // import TransactionServices from '../services/transactionServices';
 // import AccountServices from '../services/accountServices';
 // import helpers from '../helpers/helpers';
 
-// const TransactionController = {
 
-//   /**
-//    * @description get all transactions
-//    * @method getAllTransactions
-//    * @param {object} req
-//    * @param {object} res
-//    * @returns {object} containing status code and array of transactions || errorMessage
-//    */
-//   async getAllTransactions(req, res) {
-//     const result = await TransactionServices.getAllTransactions();
-//     helpers.checkServerError(result, res);
+/**
+ * @description get all transactions
+ * @method getTransactions
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} containing status code and array of transactions || errorMessage
+ */
+export const getTransactions = async (req, res, next) => {
+  try {
+    const transactions = await Transaction.findAll();
 
-//     const transactions = result.rows;
-//     return res.json({
-//       status: 200,
-//       data: transactions,
-//     });
-//   },
+    util.setSuccess(200, { transactions });
+    return util.send(res);
+  } catch (error) { next(error); }
+}
 
-//   /**
-//   * @description get a single transaction
-//   * @method getTransactionById
-//   * @param {object} req
-//   * @param {object} res
-//   * @returns {object} containing status code and transaction object || errorMessage
-//   */
-//   async getTransactionById(req, res) {
-//     const result = await TransactionServices.getTransactionById(req.params.id);
-//     helpers.checkServerError(result, res);
+  /**
+  * @description get a single transaction
+  * @method getTransactionById
+  * @param {object} req
+  * @param {object} res
+  * @returns {object} containing status code and transaction object || errorMessage
+  */
+export const getTransactionById = async (req, res, next) => {
+  try {
+    const transaction = await Transaction.findByPk(req.params.id);
+    if (!transaction) {
+      util.setError(404, 'Transaction not found');
+      return util.send(res);
+    }
+    // check for authorization
+    const accountOwner = transaction.accountEmail;
+    if (req.userData.email !== accountOwner && req.userData.type !== 'staff') {
+      util.setError(403, 'Forbidden: You are not allowed to access this transaction');
+      return util.send(res);
+    }
 
-//     if (result.rows < 1) {
-//       return res.status(404).json({
-//         status: 404,
-//         errorMessage: 'Transaction not found',
-//       });
-//     }
-
-//     // Get owner details
-//     const resp = await AccountServices.getSingleAccount(result.rows[0].accountnumber);
-//     helpers.checkServerError(result, res);
-
-//     const owner = resp.rows[0].owneremail;
-
-//     // Check for authorization
-//     if (req.userData.email !== owner && req.userData.type !== 'staff') {
-//       return res.status(403).json({
-//         status: 403,
-//         errorMessage: 'Forbidden: You are not allowed to access this transaction',
-//       });
-//     }
-
-//     // Return retrived account
-//     const transactions = result.rows;
-//     return res.json({
-//       status: 200,
-//       data: transactions,
-//     });
-//   },
+    util.setSuccess(200, { transaction });
+    return util.send(res);
+  } catch (error) { next(error); }
+}
 
 //   /**
 //   * @description credit an account

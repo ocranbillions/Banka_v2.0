@@ -10,6 +10,7 @@ module.exports = {
       },
       accountNumber: {
         type: Sequelize.BIGINT,
+        unique: true,
         allowNull: false,
       },
       accountOwner: {

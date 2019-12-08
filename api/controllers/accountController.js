@@ -84,8 +84,8 @@ export const getSingleAccount = async (req, res, next) => {
       return util.send(res);
     }
     // check for authorization
-    const ownerEmail = account.accountOwner;
-    if (req.userData.email !== ownerEmail && req.userData.type !== 'staff') {
+    const owner = account.accountOwner;
+    if (req.userData.email !== owner && req.userData.type !== 'staff') {
       util.setError(403, 'Forbidden: You are not allowed to access this account');
       return util.send(res);
     }
