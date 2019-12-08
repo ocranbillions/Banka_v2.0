@@ -27,7 +27,7 @@ server.get('/', (req, res) => {
 server.use('/api/v1/auth', authRoutes);
 server.use('/api/v1/users', userRoutes);
 server.use('/api/v1/accounts', accountRoutes);
-// server.use('/api/v1/transactions', transactionRoutes);
+server.use('/api/v1/transactions', transactionRoutes);
 
 server.use((error, req, res, next) => {
   // if(process.env.NODE_ENV === 'development')
@@ -38,7 +38,7 @@ server.use((error, req, res, next) => {
   });
 });
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 5000;
 server.listen(port, () => {
   console.log(`server is listening on port ${port}!`);
 });

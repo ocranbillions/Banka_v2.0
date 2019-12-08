@@ -2,12 +2,15 @@
 module.exports = (sequelize, DataTypes) => {
   const Transaction = sequelize.define('Transaction', {
     accountNumber: {
-      type: DataTypes.INTEGER,
-      unique: true,
+      type: DataTypes.BIGINT,
       allowNull: false,
     },
     amount: {
       type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    type: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     cashier: {
@@ -20,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     newBalance: {
       type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    accountEmail: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
   }, {});
