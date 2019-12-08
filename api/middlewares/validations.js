@@ -1,4 +1,7 @@
 import Joi from 'joi';
+import Util from "../utils/util";
+
+const util = new Util();
 
 export const validateNewStaff = (req, res, next) => {
   const schema = Joi.object().keys({
@@ -17,10 +20,8 @@ export const validateNewStaff = (req, res, next) => {
   const result = schema.validate(req.body, { abortEarly: false });
   if (result.error) {
     const error = result.error.details.map(d => d.message);
-    return res.status(400).json({
-      status: 400,
-      message: error,
-    });
+    util.setError(400, error);
+    return util.send(res);
   }
   return next();
 }
@@ -33,10 +34,8 @@ export const validateNewAccount = (req, res, next) => {
   const result = schema.validate(req.body, { abortEarly: false });
   if (result.error) {
     const error = result.error.details.map(d => d.message);
-    return res.status(400).json({
-      status: 400,
-      message: error,
-    });
+    util.setError(400, error);
+    return util.send(res);
   }
   return next();
 }
@@ -57,10 +56,8 @@ export const validateSignUp = (req, res, next) => {
   const result = schema.validate(req.body, { abortEarly: false });
   if (result.error) {
     const error = result.error.details.map(d => d.message);
-    return res.status(400).json({
-      status: 400,
-      message: error,
-    });
+    util.setError(400, error);
+    return util.send(res);
   }
   return next();
 }
@@ -75,10 +72,8 @@ export const validateSignIn = (req, res, next) => {
   const result = schema.validate(req.body, { abortEarly: false });
   if (result.error) {
     const error = result.error.details.map(d => d.message);
-    return res.status(400).json({
-      status: 400,
-      message: error,
-    });
+    util.setError(400, error);
+    return util.send(res);
   }
   return next();
 }
@@ -89,10 +84,8 @@ export const validateTransaction = (req, res, next) => {
   };
   const result = Joi.validate(req.body, schema);
   if (result.error) {
-    return res.status(400).json({
-      status: 400,
-      message: result.error.message,
-    });
+    util.setError(400, error);
+    return util.send(res);
   }
   return next();
 }
