@@ -1,7 +1,7 @@
 # Banka v2.0
 Banka is a light-weight core banking application that powers banking operations like account creation, customer deposit and withdrawals. 
 
-[![Build Status](https://travis-ci.com/ocranbillions/Banka_v2.0.svg?branch=develop)](https://travis-ci.com/ocranbillions/Banka_v2.0) [![Coverage Status](https://coveralls.io/repos/github/ocranbillions/Banka_v2.0/badge.svg?branch=develop)](https://coveralls.io/github/ocranbillions/Banka_v2.0?branch=develop) [![Maintainability](https://api.codeclimate.com/v1/badges/4c600fc965c6d7b6098e/maintainability)](https://codeclimate.com/github/ocranbillions/Banka_v2.0/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/4c600fc965c6d7b6098e/test_coverage)](https://codeclimate.com/github/ocranbillions/Banka_v2.0/test_coverage)
+[![Build Status](https://travis-ci.com/ocranbillions/Banka_v2.0.svg?branch=develop)](https://travis-ci.com/ocranbillions/Banka_v2.0) [![Coverage Status](https://coveralls.io/repos/github/ocranbillions/Banka_v2.0/badge.svg?branch=develop)](https://coveralls.io/github/ocranbillions/Banka_v2.0?branch=develop) [![Maintainability](https://api.codeclimate.com/v1/badges/4c600fc965c6d7b6098e/maintainability)](https://codeclimate.com/github/ocranbillions/Banka_v2.0/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/4c600fc965c6d7b6098e/test_coverage)](https://codeclimate.com/github/ocranbillions/Banka_v2.0/test_coverage) [![](https://img.shields.io/badge/Protected_by-Hound-a873d1.svg)](https://houndci.com) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 ## Getting Started
 ### Prerequisites
 The tools listed below are needed to run this application:

@@ -21,15 +21,11 @@ export const getUsers = async (req, res, next) => {
         "type",
         "isAdmin",
         "createdAt"
-      ],
-      order: [["createdAt", "ASC"]]
-    });
+      ], order: [["createdAt", "ASC"]] });
 
     util.setSuccess(200, { users });
     return util.send(res);
-  } catch (error) {
-    next(error);
-  }
+  } catch (error) { next(error); }
 };
 
 /**
@@ -43,8 +39,7 @@ export const getUserByID = async (req, res, next) => {
     // Check for authorization
     if (req.userData.id != req.params.id && req.userData.type !== "staff") {
       util.setError(403, "Forbidden: You are not allowed to view this profile");
-      return util.send(res);
-    }
+      return util.send(res); }
 
     const user = await User.findByPk(req.params.id, {
       attributes: [
@@ -55,19 +50,15 @@ export const getUserByID = async (req, res, next) => {
         "type",
         "isAdmin",
         "createdAt"
-      ]
-    });
+      ] });
 
     if (!user) {
-      util.setError(404, "The user with the given number was not found");
-      return util.send(res);
-    }
+      util.setError(404, "The user with the given id was not found");
+      return util.send(res); }
 
     util.setSuccess(200, { user });
     return util.send(res);
-  } catch (error) {
-    next(error);
-  }
+  } catch (error) { next(error); }
 };
 
 /**
@@ -83,20 +74,18 @@ export const createStaff = async (req, res, next) => {
     const lowerCasedEmail = email.toLowerCase();
 
     const user = await User.findOne({
-      where: { email: lowerCasedEmail }
-    });
+      where: { email: lowerCasedEmail } });
+      
     if (user) {
       util.setError(409, "Email not available");
-      return util.send(res);
-    }
+      return util.send(res); }
 
     const pwdHash = hashSync(password, 10);
     const staff = await User.create({
       ...req.body,
       email: lowerCasedEmail,
       password: pwdHash,
-      type: "staff"
-    });
+      type: "staff" });
 
     util.setSuccess(201, { user: staff });
     return util.send(res);
@@ -114,9 +103,8 @@ export const deleteUser = async (req, res, next) => {
   try {
     const user = await User.destroy({ where: { id: req.params.id } });
     if (!user) {
-      util.setError(404, "The user with the given number was not found");
-      return util.send(res);
-    }
+      util.setError(404, "The user with the given id was not found");
+      return util.send(res); }
 
     util.setSuccess(200, "User successfully deleted");
     return util.send(res);
