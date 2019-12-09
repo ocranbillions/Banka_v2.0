@@ -31,10 +31,8 @@ export const signUp = async (req, res, next) => {
     const token = generateToken(payload);
     util.setSuccess(201, { token });
     return util.send(res);
-
   } catch (error) { next(error); }
-}
-
+};
 
 export const signIn = async (req, res, next) => {
   try {
@@ -44,7 +42,7 @@ export const signIn = async (req, res, next) => {
     const user = await User.findOne({ where: { email: lowerCasedEmail } });
 
     // Incorrect email || Incorrect password
-    if((!user) || (!compareSync(password, user.dataValues.password))) {
+    if ((!user) || (!compareSync(password, user.dataValues.password))) {
       util.setError(400, 'Incorrect login information');
       return util.send(res);
     }
@@ -60,6 +58,5 @@ export const signIn = async (req, res, next) => {
     const token = generateToken(payload);
     util.setSuccess(200, { token });
     return util.send(res);
-
   } catch (error) { next(error); }
-}
+};

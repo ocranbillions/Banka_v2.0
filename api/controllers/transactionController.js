@@ -12,6 +12,7 @@ const util = new Util();
  * @method getTransactions
  * @param {object} req
  * @param {object} res
+ * @param {object} next
  * @returns {object} containing status code and array of transactions || errorMessage
  */
 export const getTransactions = async (req, res, next) => {
@@ -21,15 +22,16 @@ export const getTransactions = async (req, res, next) => {
     util.setSuccess(200, { transactions });
     return util.send(res);
   } catch (error) { next(error); }
-}
+};
 
-  /**
-  * @description get a single transaction
-  * @method getTransactionById
-  * @param {object} req
-  * @param {object} res
-  * @returns {object} containing status code and transaction object || errorMessage
-  */
+/**
+* @description get a single transaction
+* @method getTransactionById
+* @param {object} req
+* @param {object} res
+* @param {object} next
+* @returns {object} containing status code and transaction object || errorMessage
+*/
 export const getTransactionById = async (req, res, next) => {
   try {
     const transaction = await Transaction.findByPk(req.params.id);
@@ -47,7 +49,7 @@ export const getTransactionById = async (req, res, next) => {
     util.setSuccess(200, { transaction });
     return util.send(res);
   } catch (error) { next(error); }
-}
+};
 
 //   /**
 //   * @description credit an account
