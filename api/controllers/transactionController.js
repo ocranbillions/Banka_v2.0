@@ -2,16 +2,13 @@ import { Account, Transaction } from '../database/models';
 import Util from '../utils/util';
 
 const util = new Util();
-// import TransactionServices from '../services/transactionServices';
-// import AccountServices from '../services/accountServices';
-// import helpers from '../helpers/helpers';
-
 
 /**
  * @description get all transactions
  * @method getTransactions
  * @param {object} req
  * @param {object} res
+ * @param {object} next
  * @returns {object} containing status code and array of transactions || errorMessage
  */
 export const getTransactions = async (req, res, next) => {
@@ -21,15 +18,17 @@ export const getTransactions = async (req, res, next) => {
     util.setSuccess(200, { transactions });
     return util.send(res);
   } catch (error) { next(error); }
-}
+};
 
-  /**
-  * @description get a single transaction
-  * @method getTransactionById
-  * @param {object} req
-  * @param {object} res
-  * @returns {object} containing status code and transaction object || errorMessage
-  */
+
+/**
+* @description get a single transaction
+* @method getTransactionById
+* @param {object} req
+* @param {object} res
+* @param {object} next
+* @returns {object} containing status code and transaction object || errorMessage
+*/
 export const getTransactionById = async (req, res, next) => {
   try {
     const transaction = await Transaction.findByPk(req.params.id);
@@ -47,40 +46,57 @@ export const getTransactionById = async (req, res, next) => {
     util.setSuccess(200, { transaction });
     return util.send(res);
   } catch (error) { next(error); }
-}
+};
 
-//   /**
-//   * @description credit an account
-//   * @param {object} req reqest body constains:
-//   *                 accountNum, cashierId, amountt
-//   * @param {object} res
-//   * @returns {object} response object
-//   */
-//   async creditAccount(req, res) {
-//     const { accountNumber } = req.params;
-//     const cashierId = req.userData.id;
-//     const { amount } = req.body;
-//     const result = await TransactionServices.creditAccount(accountNumber, cashierId, amount);
-//     helpers.checkServerError(result, res);
 
-//     if (result === false) {
-//       return res.status(404).json({
-//         status: 404,
-//         errorMessage: 'The account with the given number was not found',
-//       });
-//     }
-//     if (result === 'Not Active') {
-//       return res.status(406).json({
-//         status: 406,
-//         errorMessage: 'This account isn\'t active',
-//       });
-//     }
-//     const transaction = result.rows[0];
-//     return res.status(201).json({
-//       status: 201,
-//       data: transaction,
-//     });
-//   },
+/**
+* @description credit an account
+* @param {object} req reqest body constains:
+*                 accountNum, cashierId, amountt
+* @param {object} res
+* @param {object} next
+* @returns {object} response object
+*/
+export const creditAccount = async (req, res, next) => {
+  try {
+    const { accountNumber } = req.params;
+    const cashierId = req.userData.id;
+    const { amount } = req.body;
+
+    const account = await Account.findOne({ where: { accountNumber } });
+    if (!account) {
+      util.setError(404, 'The account with the given number was not found');
+      return util.send(res);
+    }
+    if (account.status !== 'active') {
+      util.setError(406, 'This account isn\'t active');
+      return util.send(res);
+    }
+
+    const oldBalance = account.dataValues.balance;
+    let amountToCredit = Number.parseFloat(amount).toFixed(2);
+    amountToCredit = Number.parseFloat(amountToCredit);
+    const newBalance = amountToCredit + oldBalance;
+
+    const transaction = await Transaction.create({
+      accountNumber,
+      amount: amountToCredit,
+      type: 'credit',
+      cashier: cashierId,
+      oldBalance,
+      newBalance,
+      accountEmail: account.accountOwner
+    });
+
+    await Account.update(
+      { balance: newBalance },
+      { where: { accountNumber } }
+    );
+
+    util.setSuccess(201, { transaction });
+    return util.send(res);
+  } catch (error) { next(error); }
+};
 
 //   /**
 //   * @description debit an account

@@ -7,7 +7,7 @@ export const development = {
   database: 'banka_db',
   host: '127.0.0.1',
   dialect: 'postgres',
-  logging: false,
+  logging: true,
 };
 
 export const test = {

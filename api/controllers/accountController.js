@@ -10,6 +10,7 @@ const util = new Util();
  * @method getAccounts
  * @param {object} req
  * @param {object} res
+ * @param {object} next
  * @returns {object} response object
  */
 export const getAccounts = async (req, res, next) => {
@@ -19,7 +20,7 @@ export const getAccounts = async (req, res, next) => {
     util.setSuccess(200, { accounts });
     return util.send(res);
   } catch (error) { next(error) }
-}
+};
 
 // /**
 //  * @description get all bank accounts owned by a user
@@ -74,6 +75,7 @@ export const getAccounts = async (req, res, next) => {
  * @method getSingleAccount
  * @param {object} req
  * @param {object} res
+ * @param {object} next
  * @returns {object} response object
  */
 export const getSingleAccount = async (req, res, next) => {
@@ -93,7 +95,7 @@ export const getSingleAccount = async (req, res, next) => {
     util.setSuccess(200, { account });
     return util.send(res);
   } catch (error) { next(error) }
-}
+};
 
 
 // /**
@@ -142,11 +144,12 @@ export const getSingleAccount = async (req, res, next) => {
  * @method createAccount
  * @param {object} req
  * @param {object} res
+ * @param {object} next
  * @returns {object} response object
  */
-export const createAccount = async(req, res, next) => {
+export const createAccount = async (req, res, next) => {
   try {
-    const {  accountType, openingBalance } = req.body;
+    const { accountType, openingBalance } = req.body;
     const accountOwner = req.userData.email;
     const accountNumber = generateAccountNumber();
     const balance = Number.parseFloat(openingBalance).toFixed(2);
@@ -161,23 +164,23 @@ export const createAccount = async(req, res, next) => {
     util.setSuccess(201, { account });
     return util.send(res);
   } catch (error) { next(error) }
-}
+};
 
 /**
  * @description deletes an account
  * @method deleteAccount
  * @param {object} req
  * @param {object} res
+ * @param {object} next
  * @returns {object} response object
  */
 export const deleteAccount = async (req, res, next) => {
-  try{
+  try {
     const account = await Account.destroy({ where: { accountNumber: req.params.accountNumber } });
-    if(!account) {
+    if (!account) {
       util.setError(404, 'The account with the given number was not found');
       return util.send(res);
     }
-  
     util.setSuccess(200, 'Account successfully deleted');
     return util.send(res);
   } catch (error) { next(error) }
@@ -189,9 +192,10 @@ export const deleteAccount = async (req, res, next) => {
  * @method changeAccountStatus
  * @param {object} req
  * @param {object} res
+ * @param {object} next
  * @returns {object} response object
  */
-export const changeAccountStatus = async(req, res, next) => {
+export const changeAccountStatus = async (req, res, next) => {
   try {
     if (req.body.status !== 'active' && req.body.status !== 'dormant') {
       util.setError(400, 'set status: active || dormant');
