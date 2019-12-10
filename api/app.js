@@ -5,12 +5,12 @@ import cors from 'cors';
 import swagger from 'swagger-ui-express';
 import swaggerDocument from './swagger.json';
 
-
 // Api routes
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 import accountRoutes from './routes/accountRoutes';
 import transactionRoutes from './routes/transactionRoutes';
+
 
 const server = express();
 server.use(cors());
@@ -30,13 +30,22 @@ server.use('/api/v1/accounts', accountRoutes);
 server.use('/api/v1/transactions', transactionRoutes);
 
 server.use((error, req, res, next) => {
-  // if(process.env.NODE_ENV === 'development')
-  console.log(error.stack);
+  if (process.env.NODE_ENV === 'development') {
+    console.log(error.stack);
+  }
+
   return res.status(500).json({
     status: 500,
-    errorMessage: 'Oops! something terrible happened. Try again.',
+    message: 'Oops! something terrible happened. Try again.',
   });
 });
+
+// handle's random route
+server.get('*', (req, res) => res.status(404).json({
+  status: 404,
+  message: 'Page not found!'
+}));
+
 
 const port = process.env.PORT || 3001;
 server.listen(port, () => {
