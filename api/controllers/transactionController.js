@@ -151,36 +151,3 @@ export const debitAccount = async (req, res, next) => {
     return util.send(res);
   } catch (error) { next(error); }
 };
-//   const { accountNumber } = req.params;
-//   const cashierId = req.userData.id;
-//   const { amount } = req.body;
-//   const result = await TransactionServices.debitAccount(accountNumber, cashierId, amount);
-//   helpers.checkServerError(result, res);
-
-//   if (result === false) {
-//     return res.status(404).json({
-//       status: 404,
-//       errorMessage: 'The account with the given number was not found',
-//     });
-//   }
-//   if (result === 'Not Active') {
-//     return res.status(406).json({
-//       status: 406,
-//       errorMessage: 'This account isn\'t active',
-//     });
-//   }
-//   if (result === 'Insufficient funds') {
-//     return res.status(200).json({
-//       status: 200,
-//       errorMessage: 'Sorry, you do not have enough funds for this request',
-//     });
-//   }
-
-//   const transaction = result.rows[0];
-//   return res.status(201).json({
-//     status: 201,
-//     data: transaction,
-//   });
-// },
-// };
-
