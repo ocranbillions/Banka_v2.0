@@ -3,6 +3,19 @@ import Util from '../utils/util';
 
 const util = new Util();
 
+/**
+ * @description Returns an array of error messages found on form validation
+ * @method returnErrorMessage
+ * @param {object} result
+ * @param {object} responseObj
+ * @returns {object} with a description of input errors
+ */
+function returnErrorMessage(result, responseObj) {
+  const error = result.error.details.map(d => d.message);
+  util.setError(400, error);
+  return util.send(responseObj);
+}
+
 export const validateNewStaff = (req, res, next) => {
   const schema = Joi.object().keys({
     firstName: Joi.string().regex(/^[A-Za-z]+$/).min(2).error(() => ({
@@ -21,11 +34,7 @@ export const validateNewStaff = (req, res, next) => {
     isAdmin: Joi.boolean().required(),
   });
   const result = schema.validate(req.body, { abortEarly: false });
-  if (result.error) {
-    const error = result.error.details.map(d => d.message);
-    util.setError(400, error);
-    return util.send(res);
-  }
+  if (result.error) returnErrorMessage(result, res);
   return next();
 };
 
@@ -35,11 +44,7 @@ export const validateNewAccount = (req, res, next) => {
     openingBalance: Joi.number().min(1000).required(),
   });
   const result = schema.validate(req.body, { abortEarly: false });
-  if (result.error) {
-    const error = result.error.details.map(d => d.message);
-    util.setError(400, error);
-    return util.send(res);
-  }
+  if (result.error) returnErrorMessage(result, res);
   return next();
 };
 
@@ -60,11 +65,7 @@ export const validateSignUp = (req, res, next) => {
     password: Joi.string().min(5).required(),
   });
   const result = schema.validate(req.body, { abortEarly: false });
-  if (result.error) {
-    const error = result.error.details.map(d => d.message);
-    util.setError(400, error);
-    return util.send(res);
-  }
+  if (result.error) returnErrorMessage(result, res);
   return next();
 };
 
@@ -77,11 +78,7 @@ export const validateSignIn = (req, res, next) => {
     password: Joi.string().min(5).required(),
   });
   const result = schema.validate(req.body, { abortEarly: false });
-  if (result.error) {
-    const error = result.error.details.map(d => d.message);
-    util.setError(400, error);
-    return util.send(res);
-  }
+  if (result.error) returnErrorMessage(result, res);
   return next();
 };
 
@@ -96,5 +93,3 @@ export const validateTransaction = (req, res, next) => {
   }
   return next();
 };
-
-// next validator here
