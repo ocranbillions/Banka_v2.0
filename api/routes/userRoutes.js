@@ -1,7 +1,14 @@
 import { Router } from 'express';
-import { getUsers, getUserByID, deleteUser, createStaff } from '../controllers/userController';
+import * as UserController from '../controllers/userController';
 import { validateNewStaff } from '../middlewares/validations';
 import Auth from '../middlewares/auth';
+
+const {
+  getUsers,
+  getUserByID,
+  deleteUser,
+  createStaff
+} = UserController;
 
 const router = Router();
 
