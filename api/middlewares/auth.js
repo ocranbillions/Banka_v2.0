@@ -15,7 +15,7 @@ export default {
 
     const token = req.headers.authorization.split(' ')[1];
     if (!token) {
-      util.setError(401, 'Invalid token');
+      util.setError(401, 'Authorization header must be in the format "Bearer token".');
       return util.send(res);
     }
     try {
@@ -23,7 +23,7 @@ export default {
       req.userData = decoded;
       return next();
     } catch (error) {
-      util.setError(401, 'Auth failed!');
+      util.setError(401, 'Invalid token');
       return util.send(res);
     }
   },

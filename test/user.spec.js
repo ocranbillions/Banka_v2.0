@@ -3,7 +3,7 @@
 /* eslint-disable no-undef */
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import server from '../app';
+import server from '../api/app';
 
 chai.use(chaiHttp);
 const should = chai.should();
@@ -52,12 +52,12 @@ describe('USERS', () => {
       res.body.message.should.equal('You must be logged in to access this route');
     });
 
-    it('Should NOT authorize user with invalid token', async () => {
+    it('Should NOT authenticate user with improper header format', async () => {
       const res = await chai.request(server).get('/api/v1/users/')
         .set('Authorization', '$INVALIDTOKEN');
       res.should.have.status(401);
       res.body.should.have.property('message');
-      res.body.message.should.equal('Invalid token');
+      res.body.message.should.equal('Authorization header must be in the format "Bearer token".');
     });
 
     it('Should fail if it lacks valid authentication', async () => {
@@ -65,7 +65,7 @@ describe('USERS', () => {
         .set('Authorization', 'Bearer $sometoken');
       res.should.have.status(401);
       res.body.should.have.property('message');
-      res.body.message.should.equal('Auth failed!');
+      res.body.message.should.equal('Invalid token');
     });
 
     it('Should deny non-staff', async () => {
@@ -99,19 +99,19 @@ describe('USERS', () => {
       res.body.should.have.property('message');
       res.body.message.should.equal('You must be logged in to access this route');
     });
-    it('Should NOT authorize user with invalid token', async () => {
+    it('Should NOT authenticate user with improper header format', async () => {
       const res = await chai.request(server).get('/api/v1/users/1')
         .set('Authorization', '$INVALIDTOKEN');
       res.should.have.status(401);
       res.body.should.have.property('message');
-      res.body.message.should.equal('Invalid token');
+      res.body.message.should.equal('Authorization header must be in the format "Bearer token".');
     });
     it('Should fail if it lacks valid authentication', async () => {
       const res = await chai.request(server).get('/api/v1/users/1')
         .set('Authorization', 'Bearer $sometoken');
       res.should.have.status(401);
       res.body.should.have.property('message');
-      res.body.message.should.equal('Auth failed!');
+      res.body.message.should.equal('Invalid token');
     });
   });
 
@@ -167,19 +167,19 @@ describe('USERS', () => {
       res.body.should.have.property('message');
       res.body.message.should.equal('You must be logged in to access this route');
     });
-    it('Should NOT authorize user with invalid token', async () => {
+    it('Should NOT authenticate user with improper auth header format', async () => {
       const res = await chai.request(server).post('/api/v1/users/')
-        .set('Authorization', '$INVALIDTOKEN');
+        .set('Authorization', '$token');
       res.should.have.status(401);
       res.body.should.have.property('message');
-      res.body.message.should.equal('Invalid token');
+      res.body.message.should.equal('Authorization header must be in the format "Bearer token".');
     });
     it('Should fail if it lacks valid authentication', async () => {
       const res = await chai.request(server).post('/api/v1/users/')
         .set('Authorization', 'Bearer $sometoken');
       res.should.have.status(401);
       res.body.should.have.property('message');
-      res.body.message.should.equal('Auth failed!');
+      res.body.message.should.equal('Invalid token');
     });
   });
 
