@@ -1,7 +1,7 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import jwtDecode from 'jwt-decode';
-import server from '../app';
+import server from '../api/app';
 
 chai.use(chaiHttp);
 const { should, expect } = chai;
