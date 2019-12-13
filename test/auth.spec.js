@@ -13,17 +13,20 @@ describe('AUTH', () => {
         firstName: 'Michael',
         lastName: 'Bridges',
         email: 'michaelbridges2019@yahoo.com',
-        password: 'secretMike',
+        password: 'secretMike'
       };
-      const res = await chai.request(server).post('/api/v1/auth/signup').send(formData);
+      const res = await chai
+        .request(server)
+        .post('/api/v1/auth/signup')
+        .send(formData);
       res.should.have.status(201);
       res.body.should.have.property('data');
       res.body.data.should.have.property('token');
-      const user = jwtDecode(res.body.data.token)
+      const user = jwtDecode(res.body.data.token);
       expect(user).to.include({
         firstName: formData.firstName,
         lastName: formData.lastName,
-        email: formData.email,  
+        email: formData.email
       });
     });
 
@@ -32,9 +35,12 @@ describe('AUTH', () => {
         firstName: 'Edward',
         lastName: 'Smart',
         email: 'michaelbridges2019@yahoo.com',
-        password: 'eddeddy',
+        password: 'eddeddy'
       };
-      const res = await chai.request(server).post('/api/v1/auth/signup').send(formData);
+      const res = await chai
+        .request(server)
+        .post('/api/v1/auth/signup')
+        .send(formData);
       res.should.have.status(409);
       res.body.should.have.property('message');
       res.body.message.should.equal('Email not available');
@@ -45,9 +51,12 @@ describe('AUTH', () => {
         firstName: '',
         lastName: '',
         email: 'mikeBrid@gmail.com',
-        password: 'secretMike',
+        password: 'secretMike'
       };
-      const res = await chai.request(server).post('/api/v1/auth/signup').send(formData);
+      const res = await chai
+        .request(server)
+        .post('/api/v1/auth/signup')
+        .send(formData);
       res.should.have.status(400);
       res.body.should.have.property('message');
       res.body.message.should.be.a('array');
@@ -59,9 +68,12 @@ describe('AUTH', () => {
         firstName: '   ',
         lastName: '12345',
         email: 'mik.com',
-        password: 'secretMike',
+        password: 'secretMike'
       };
-      const res = await chai.request(server).post('/api/v1/auth/signup').send(formData);
+      const res = await chai
+        .request(server)
+        .post('/api/v1/auth/signup')
+        .send(formData);
       res.should.have.status(400);
       res.body.should.have.property('message');
       res.body.message.should.be.a('array');
@@ -73,22 +85,28 @@ describe('AUTH', () => {
     it('Should signin a registered user', async () => {
       const formData = {
         email: 'samo@gmail.com',
-        password: 'mysecret',
+        password: 'mysecret'
       };
-      const res = await chai.request(server).post('/api/v1/auth/signin').send(formData);
+      const res = await chai
+        .request(server)
+        .post('/api/v1/auth/signin')
+        .send(formData);
       res.should.have.status(200);
       res.body.should.have.property('data');
       res.body.data.should.have.property('token');
-      const user = jwtDecode(res.body.data.token)
+      const user = jwtDecode(res.body.data.token);
       expect(user).to.include({ email: formData.email });
     });
 
     it('Should NOT signin an email account that doesnt exist in the db', async () => {
       const formData = {
         email: 'randomEmail@email.com',
-        password: 'password',
+        password: 'password'
       };
-      const res = await chai.request(server).post('/api/v1/auth/signin').send(formData);
+      const res = await chai
+        .request(server)
+        .post('/api/v1/auth/signin')
+        .send(formData);
       res.should.have.status(400);
       res.body.should.have.property('message');
       res.body.message.should.equal('Incorrect login information');
@@ -97,9 +115,12 @@ describe('AUTH', () => {
     it('Should NOT signin an existing user with incorrect password', async () => {
       const formData = {
         email: 'samo@gmail.com',
-        password: 'incorrect-password',
+        password: 'incorrect-password'
       };
-      const res = await chai.request(server).post('/api/v1/auth/signin').send(formData);
+      const res = await chai
+        .request(server)
+        .post('/api/v1/auth/signin')
+        .send(formData);
       res.should.have.status(400);
       res.body.should.have.property('message');
       res.body.message.should.equal('Incorrect login information');
@@ -108,9 +129,12 @@ describe('AUTH', () => {
     it('Should NOT signin with incomplete form data', async () => {
       const formData = {
         email: '',
-        password: '',
+        password: ''
       };
-      const res = await chai.request(server).post('/api/v1/auth/signin').send(formData);
+      const res = await chai
+        .request(server)
+        .post('/api/v1/auth/signin')
+        .send(formData);
       res.should.have.status(400);
       res.body.should.have.property('message');
       res.body.message.should.be.a('array');

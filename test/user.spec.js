@@ -93,6 +93,22 @@ describe('USERS', () => {
       res.body.data.user.type.should.equal('staff');
       res.body.data.user.isAdmin.should.equal(true);
     });
+    it('Should protect profile view from unauthorized users', async () => {
+      const res = await chai.request(server)
+        .get('/api/v1/users/1')
+        .set('Authorization', `Bearer ${clientToken}`);
+      res.should.have.status(403);
+      res.body.should.have.property('message');
+      res.body.message.should.equal('Forbidden: You are not allowed to view this profile');
+    });
+    it('Should return 404 for a non existent user', async () => {
+      const res = await chai.request(server)
+        .get('/api/v1/users/100')
+        .set('Authorization', `Bearer ${adminToken}`);
+      res.should.have.status(404);
+      res.body.should.have.property('message');
+      res.body.message.should.equal('The user with the given id was not found');
+    });
     it('Should NOT get access to /users if user is not logged in', async () => {
       const res = await chai.request(server).get('/api/v1/users/1');
       res.should.have.status(401);
@@ -186,7 +202,7 @@ describe('USERS', () => {
   describe('DELETE USER', () => {
     it('Admin should be able to delete a user', async () => {
       const res = await chai.request(server)
-        .delete(`/api/v1/users/6`)
+        .delete('/api/v1/users/6')
         .set('Authorization', `Bearer ${adminToken}`);
       res.should.have.status(200);
       res.body.should.have.property('status');
@@ -197,12 +213,21 @@ describe('USERS', () => {
     });
     it('Client shount not be able to delete a user', async () => {
       const res = await chai.request(server)
-        .delete(`/api/v1/users/2`)
+        .delete('/api/v1/users/2')
         .set('Authorization', `Bearer ${clientToken}`);
       res.should.have.status(403);
       res.body.should.have.property('status');
       res.body.should.have.property('message');
       res.body.message.should.equal('Forbidden: You are not an admin');
+    });
+    it('Client not delete a non existing user', async () => {
+      const res = await chai.request(server)
+        .delete('/api/v1/users/200')
+        .set('Authorization', `Bearer ${adminToken}`);
+      res.should.have.status(404);
+      res.body.should.have.property('status');
+      res.body.should.have.property('message');
+      res.body.message.should.equal('The user with the given id was not found');
     });
   });
 });
