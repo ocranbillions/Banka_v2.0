@@ -1,5 +1,5 @@
 import { hashSync } from 'bcryptjs';
-import { User } from '../../db_config/models';
+import { User, Account } from '../../db_config/models';
 import Util from '../utils/util';
 
 const util = new Util();
@@ -55,6 +55,12 @@ export const getUserByID = async (req, res, next) => {
         'type',
         'isAdmin',
         'createdAt'
+      ],
+      include: [
+        { // User's bank accounts
+          model: Account,
+          as: 'accounts'
+        },
       ]
     });
 
