@@ -1,8 +1,13 @@
+/* eslint-disable func-names */
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Account = sequelize.define('Account', {
+    userId: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+    },
     accountNumber: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.STRING,
       unique: true,
       allowNull: false,
     },
@@ -24,8 +29,13 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
   }, {});
-  Account.associate = function(models) {
-    // associations can be defined here
+  Account.associate = function (models) {
+    Account.belongsTo(models.User, {
+      foreignKey: 'userId',
+      as: 'user',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
   };
   return Account;
 };

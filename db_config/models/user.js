@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-disable func-names */
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     firstName: {
@@ -30,8 +30,13 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
   }, {});
-  User.associate = function(models) {
-    // associations can be defined here
+  User.associate = function (models) {
+    User.hasMany(models.Account, {
+      foreignKey: 'userId',
+      as: 'accounts',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
   };
   return User;
 };

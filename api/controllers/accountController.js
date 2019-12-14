@@ -155,6 +155,7 @@ export const createAccount = async (req, res, next) => {
     const balance = Number.parseFloat(openingBalance).toFixed(2);
 
     const account = await Account.create({
+      userId: req.userData.id,
       accountNumber,
       accountOwner,
       accountType,

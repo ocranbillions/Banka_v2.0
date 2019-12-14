@@ -8,7 +8,8 @@ const {
   getSingleAccount,
   deleteAccount,
   changeAccountStatus,
-  createAccount } = AccountController;
+  createAccount
+} = AccountController;
 
 const router = Router();
 
