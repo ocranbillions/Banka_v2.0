@@ -1,5 +1,5 @@
 import { hashSync } from 'bcryptjs';
-import { User, Account } from '../../db_config/models';
+import { User, Account } from '../../database/models';
 import Util from '../utils/util';
 
 const util = new Util();
@@ -122,7 +122,8 @@ export const deleteUser = async (req, res, next) => {
     const user = await User.destroy({ where: { id: req.params.id } });
     if (!user) {
       util.setError(404, 'The user with the given id was not found');
-      return util.send(res);}
+      return util.send(res);
+    }
 
     util.setSuccess(200, 'User successfully deleted');
     return util.send(res);
