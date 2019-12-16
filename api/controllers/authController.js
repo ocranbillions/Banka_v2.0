@@ -1,5 +1,5 @@
 import { hashSync, compareSync } from 'bcryptjs';
-import { User } from '../../db_config/models';
+import { User } from '../../database/models';
 import generateToken from '../utils/generateToken';
 import Util from '../utils/util';
 
@@ -7,7 +7,9 @@ const util = new Util();
 
 export const signUp = async (req, res, next) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const {
+      firstName, lastName, email, password
+    } = req.body;
     const lowerCasedEmail = email.toLowerCase();
 
     const emailFound = await User.findOne({ where: { email: lowerCasedEmail } });
@@ -17,8 +19,7 @@ export const signUp = async (req, res, next) => {
     }
 
     const pwdHash = hashSync(password, 10);
-    const user = await User.create({
-      ...req.body, email: lowerCasedEmail, password: pwdHash });
+    const user = await User.create({ ...req.body, email: lowerCasedEmail, password: pwdHash });
 
     const payload = {
       firstName,

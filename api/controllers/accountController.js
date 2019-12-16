@@ -1,4 +1,4 @@
-import { Account } from '../../db_config/models';
+import { Account } from '../../database/models';
 import generateAccountNumber from '../utils/accountNumberGenerator';
 import Util from '../utils/util';
 
@@ -19,55 +19,8 @@ export const getAccounts = async (req, res, next) => {
 
     util.setSuccess(200, { accounts });
     return util.send(res);
-  } catch (error) { next(error) }
+  } catch (error) { next(error); }
 };
-
-// /**
-//  * @description get all bank accounts owned by a user
-//  * @param {object} req
-//  * @param {object} res
-//  * @returns {object} response object
-//  */
-// export const getAccountsByEmail = async (req, res, next) => {
-//   try {
-//     // Lookup email
-//     const email = req.params.email.toLowerCase();
-//     const resp = await UserServices.getUserByEmail(email);
-//     helpers.checkServerError(resp, res);
-
-//     if (resp.rows < 1) {
-//         return res.status(404).json({
-//         status: 404,
-//         errorMessage: 'The user with the given email was not found',
-//         });
-//     }
-
-//     const result = await UserServices.getAccountsByOwnerEmail(email);
-//     helpers.checkServerError(result, res);
-
-//     if (result.rows < 1) {
-//         return res.status(404).json({
-//         status: 404,
-//         errorMessage: 'No accounts for this user yet',
-//         });
-//     }
-//     // Check for authorization
-//     const ownerEmail = result.rows[0].owneremail;
-//     if (req.userData.email !== ownerEmail && req.userData.type !== 'staff') {
-//         return res.status(403).json({
-//         status: 403,
-//         errorMessage: 'Forbidden: You are not allowed to access these accounts',
-//         });
-//     }
-
-//     // Return retrived account
-//     const accounts = result.rows;
-//     return res.json({
-//         status: 200,
-//         data: accounts,
-//     });
-//   } catch (error) { next(error) }
-// }
 
 
 /**
@@ -94,7 +47,7 @@ export const getSingleAccount = async (req, res, next) => {
 
     util.setSuccess(200, { account });
     return util.send(res);
-  } catch (error) { next(error) }
+  } catch (error) { next(error); }
 };
 
 
@@ -164,7 +117,7 @@ export const createAccount = async (req, res, next) => {
 
     util.setSuccess(201, { account });
     return util.send(res);
-  } catch (error) { next(error) }
+  } catch (error) { next(error); }
 };
 
 /**
@@ -184,8 +137,8 @@ export const deleteAccount = async (req, res, next) => {
     }
     util.setSuccess(200, 'Account successfully deleted');
     return util.send(res);
-  } catch (error) { next(error) }
-}
+  } catch (error) { next(error); }
+};
 
 
 /**
@@ -205,8 +158,10 @@ export const changeAccountStatus = async (req, res, next) => {
     const { status } = req.body;
     const accounts = await Account.update(
       { status },
-      { returning: true,
-        where: { accountNumber: req.params.accountNumber } }
+      {
+        returning: true,
+        where: { accountNumber: req.params.accountNumber }
+      }
     );
 
     if (accounts[0] === 0) {
@@ -216,5 +171,5 @@ export const changeAccountStatus = async (req, res, next) => {
 
     util.setSuccess(200, { account: accounts[1][0].dataValues });
     return util.send(res);
-  } catch (error) { next(error) }
-}
+  } catch (error) { next(error); }
+};
