@@ -10,7 +10,6 @@ The tools listed below are needed to run this application:
 * 
 ### Installation
 `git clone https://github.com/ocranbillions/Banka_v2.0.git`
-- Pull the develop branch off this repository
 - Run `npm install` to install all dependencies
 - Run npm start to start the app
 - Access endpoints on **localhost:3000**
