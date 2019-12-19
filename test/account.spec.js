@@ -102,6 +102,17 @@ describe('ACCOUNTS', () => {
         .property('message')
         .eql('The account with the given number was not found');
     });
+
+    it('Should grant access to only admin and account owner', async () => {
+      const res = await chai
+        .request(server)
+        .get('/api/v1/accounts/9852136521')
+        .set('Authorization', `Bearer ${clientToken}`);
+      res.should.have.status(403);
+      res.body.should.have
+        .property('message')
+        .eql('Forbidden: You are not allowed to access this account');
+    });
   });
 
   // it('Should get all transactions on an account', async () => {
@@ -177,6 +188,7 @@ describe('ACCOUNTS', () => {
         .property('message')
         .eql('The account with the given number was not found');
     });
+
     it('should allow only admin to change account status', async () => {
       const res = await chai
         .request(server)
@@ -186,6 +198,21 @@ describe('ACCOUNTS', () => {
       res.body.should.have
         .property('message')
         .eql('Forbidden: You are not an admin');
+    });
+
+    it('Should only be dormant or active', async () => {
+      const formData = {
+        status: 'random'
+      };
+      const res = await chai
+        .request(server)
+        .patch('/api/v1/accounts/5421214520')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send(formData);
+      res.should.have.status(400);
+      res.body.should.have
+        .property('message')
+        .eql('set status: active || dormant');
     });
   });
 
