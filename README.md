@@ -54,4 +54,4 @@ Run `npm test` in the root folder.
 
 
 ### Author
-[**Samuel Ocran**](https://twitter.com/ocranbillions)
+[**Samuel Ocran**](https://linkedin.com/in/ocranbillions)
