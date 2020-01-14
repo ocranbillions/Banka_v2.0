@@ -8,6 +8,7 @@ module.exports = {
 		"mocha": true
 	},
 	"rules": {
+		"linebreak-style": ["error", process.env.NODE_ENV === 'prod' ? "unix" : "windows"],
 		"one-var": 0,
 		"one-var-declaration-per-line": 0,
 		"new-cap": 0,

@@ -1,0 +1,6 @@
+create dev database named banka_db
+create test database named banka_test_db
+
+npm install @babel/cli -g
+npm install @babel/core -g
+npm install @babel/node -g
