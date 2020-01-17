@@ -1,4 +1,4 @@
-import { Account } from '../../database/models';
+import { Account } from '../database/models';
 import generateAccountNumber from '../utils/accountNumberGenerator';
 import Util from '../utils/util';
 
