@@ -18,7 +18,7 @@
     "clean": "rm -rf build && mkdir build",
     "build-server": "babel -d ./build ./api && cp api/swagger.json build/",
     "build": "npm run clean && npm run build-server",
-    "heroku-postbuild": "npm run migrate"
+    "heroku-postbuild": "npm run migrate && npm run build"
   },
   "author": "@ocranbillions",
   "license": "MIT",
