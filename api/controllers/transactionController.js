@@ -1,4 +1,4 @@
-import { Account, Transaction } from '../database/models';
+import { Account, Transaction } from '../../database/models';
 import Util from '../utils/util';
 
 const util = new Util();
