@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "title": "Banka"
   },
-  "host": "my-banka.herokuapp.com",
+  "host": "bankalite.herokuapp.com",
   "basePath": "/api/v1",
   "tags": [
     {

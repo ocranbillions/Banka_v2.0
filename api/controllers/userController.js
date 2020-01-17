@@ -1,5 +1,5 @@
 import { hashSync } from 'bcryptjs';
-import { User, Account } from '../../database/models';
+import { User, Account } from '../database/models';
 import Util from '../utils/util';
 
 const util = new Util();

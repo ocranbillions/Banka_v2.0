@@ -14,7 +14,11 @@
     "seed:undo": "sequelize db:seed:undo:all",
     "reset:db": "npm run migrate:undo && npm run migrate && npm run seed",
     "coveralls-coverage": "nyc report --reporter=text-lcov | coveralls",
-    "codeclimate-coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter"
+    "codeclimate-coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter",
+    "clean": "rm -rf build && mkdir build",
+    "build-server": "babel -d ./build ./api && cp api/swagger.json build/",
+    "build": "npm run clean && npm run build-server",
+    "heroku-postbuild": "npm run migrate"
   },
   "author": "@ocranbillions",
   "license": "MIT",

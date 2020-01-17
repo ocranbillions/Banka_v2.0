@@ -12,7 +12,7 @@ The tools listed below are needed to run this application:
 `git clone https://github.com/ocranbillions/Banka_v2.0.git`
 - Run `npm install` to install all dependencies
 - Run npm start to start the app
-- Access endpoints on **localhost:3000**
+- Access endpoints on **localhost:3001**
 
 ### How it works
 - Customer sign up and create as many bank accounts as they want
@@ -47,7 +47,7 @@ The tools listed below are needed to run this application:
 | DELETE|Delete staff| /api/v1/users/id | admin |
 
 ### Swagger documentation
-https://banka2.herokuapp.com/api-docs/
+https://bankalite.herokuapp.com/api-docs/
 
 ### Running the tests
 Run `npm test` in the root folder.
