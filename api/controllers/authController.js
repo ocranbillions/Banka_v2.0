@@ -1,5 +1,5 @@
 import { hashSync, compareSync } from 'bcryptjs';
-import { User } from '../database/models';
+import { User } from '../../database/models';
 import generateToken from '../utils/generateToken';
 import Util from '../utils/util';
 
