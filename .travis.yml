@@ -6,7 +6,6 @@ node_js:
   - stable
 before_script:
   - psql -c 'create database banka_test_db; ' -U postgres
-  - npm install -g sequelize-cli
 script: 
   - "npm test"
   - "npm run coveralls-coverage"
