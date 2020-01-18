@@ -31,7 +31,7 @@
     "@babel/preset-env": "^7.8.3",
     "@babel/preset-stage-0": "^7.8.3",
     "@babel/register": "^7.8.3",
-    "@babel/runtime": "^7.0.0-beta.55",
+    "@babel/runtime": "7.0.0-beta.55",
     "babel-node": "0.0.1-security",
     "chai": "^4.2.0",
     "chai-http": "^4.2.1",
