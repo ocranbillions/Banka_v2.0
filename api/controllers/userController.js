@@ -129,3 +129,29 @@ export const deleteUser = async (req, res, next) => {
     return util.send(res);
   } catch (error) { next(error); }
 };
+
+
+/**
+ * @description get accounts owned by a user
+ * @method getUserAccounts
+ * @param {object} req
+ * @param {object} res
+ * @param {object} next
+ * @returns {object} response object
+ */
+export const getUserAccounts = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+
+    if (req.userData.id != userId && req.userData.type !== 'staff') {
+      util.setError(403, 'Forbidden: You are not allowed to access the user\'s accounts');
+      return util.send(res);
+    }
+
+    const accounts = await Account.findAll({ where: { userId } });
+
+    util.setSuccess(200, { accounts });
+    return util.send(res);
+
+  } catch (error) { next(error); }
+}
