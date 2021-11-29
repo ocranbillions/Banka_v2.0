@@ -16,10 +16,9 @@ The tools listed below are needed to run this application:
 
 ### How it works
 - Customer sign up and create as many bank accounts as they want
-- But must visit the bank for deposit/withdrawal
 - Customer can view their account history 
 - Cashier can place debit/credit transactions on customer's account
-- Cashier can view all customers accounts
+- Cashier can view all customers' account(s)
 - Admin creates staff account for each new cashier
 - Admin can delete any account. Can also place account status on dormant or active.
 - Accounts created by admin can be of type admin or just regular staff
